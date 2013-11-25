@@ -38,12 +38,18 @@ class User(object):
 
     def insert(self, db):
         col = db.portfolio_users
+        if User.find(db, self.student_id) != None:
+            return
         col.insert({
             "name": self.name,
             "student_id":self.student_id,
             "joining_groups":self.joining_groups,
             "course":self.course,
             "grade":self.grade})
+
+    def update(self, db):
+        col = db.portfolio_users
+        col.update({"student_id": self.student_id}, {"name":self.name, "student_id":self.student_id, "joining_groups": self.joining_groups, "course": self.course, "grade": self.grade})
 
     @classmethod
     def find(clz, db, student_id):
@@ -77,7 +83,7 @@ class User(object):
             joining_groups = doc["joining_groups"]
             if group_id in joining_groups:
                 store.append(doc["student_id"])
-        return store        
+        return store
 
 class GoalDuplicationError(ValueError):
     pass
